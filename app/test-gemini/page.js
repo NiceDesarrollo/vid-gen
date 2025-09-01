@@ -4,12 +4,12 @@ import useFetch from "../hooks/useFetch";
 import useForm from "../hooks/useForm";
 
 const INITIAL_FORM_GENERATE_SCRIPT_DATA = {
-  topic: "",
+  script: "",
 };
 
 export default function TestGemini() {
   const [scriptRequested, setScriptRequested] = useState(false);
-  
+
   const [showResult, setShowResult] = useState(false);
   const { formData, handleInputChange, handleReset } = useForm(
     INITIAL_FORM_GENERATE_SCRIPT_DATA
@@ -17,10 +17,10 @@ export default function TestGemini() {
 
   // Request logic - only triggers when scriptRequested changes
   const { loading, error, value } = useFetch(
-    "/api/gemini",
+    "/api/geminiScript",
     {
       method: "POST",
-      body: JSON.stringify({ topic: formData.topic }),
+      body: JSON.stringify({ script: formData.script }),
     },
     [scriptRequested] // Only triggers when scriptRequested changes
   );
@@ -28,7 +28,7 @@ export default function TestGemini() {
   // UI logic
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.topic.trim()) {
+    if (formData.script.trim()) {
       setScriptRequested(true);
       setShowResult(true);
     }
@@ -116,7 +116,7 @@ export default function TestGemini() {
                   </p>
                 </div>
                 <p className="text-sm text-green-700 mt-2">
-                  <strong>Topic:</strong> {formData.topic}
+                  <strong>Topic:</strong> {formData.script}
                 </p>
               </div>
             )}

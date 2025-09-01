@@ -1,17 +1,11 @@
 import { ElevenLabsClient } from '@elevenlabs/elevenlabs-js';
+import { apiKeyCheck } from "@/app/lib/apiKeyCheck";
 
 export async function POST(request) {
   try {
     const { script } = await request.json();
 
-    // Check if API key is available
-    if (!process.env.ELEVENLABS_API_KEY) {
-      console.error('ELEVENLABS_API_KEY environment variable is not set');
-      return Response.json({ 
-        success: false, 
-        error: 'API key not configured' 
-      }, { status: 500 });
-    }
+    apiKeyCheck(process.env.ELEVENLABS_API_KEY);
 
     // Initialize ElevenLabs client
     const elevenlabs = new ElevenLabsClient({

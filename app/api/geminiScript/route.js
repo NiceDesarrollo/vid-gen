@@ -1,17 +1,11 @@
 import { GoogleGenAI } from "@google/genai";
+import { apiKeyCheck } from "@/app/lib/apiKeyCheck";
 
 export async function POST(request) {
   try {
     const { topic } = await request.json();
     
-    // Check if API key is available
-    if (!process.env.GEMINI_API_KEY) {
-      console.error('GEMINI_API_KEY environment variable is not set');
-      return Response.json({ 
-        success: false, 
-        error: 'API key not configured' 
-      }, { status: 500 });
-    }
+    apiKeyCheck(process.env.GEMINI_API_KEY);
     
     // Initialize Gemini with the new SDK
     const ai = new GoogleGenAI({
@@ -30,7 +24,7 @@ export async function POST(request) {
     Format the response as a simple text script.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash", // FREE tier for text generation
       contents: prompt,
       config: {
         thinkingConfig: {
@@ -42,7 +36,9 @@ export async function POST(request) {
     return Response.json({ 
       success: true, 
       script: response.text,
-      topic: topic 
+      topic: topic,
+      model: "gemini-2.5-flash",
+      cost: "FREE" // Highlight that this is free!
     });
 
   } catch (error) {
